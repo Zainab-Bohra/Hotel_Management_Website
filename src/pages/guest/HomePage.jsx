@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,6 +5,7 @@ import Button from "../../components/Button";
 import { FaWifi, FaSwimmingPool, FaConciergeBell, FaSpa } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import RoomCard from "../../components/RoomCard";
+import HeroSearchBar from "../../components/HeroSearchBar"; // 1. Import the new component
 
 // Example Testimonial component
 const TestimonialCard = ({ quote, author }) => (
@@ -16,6 +16,7 @@ const TestimonialCard = ({ quote, author }) => (
 );
 
 const HomePage = () => {
+  // Get top 3 rooms for the featured section
   const featuredRooms = useSelector((state) =>
     state.rooms.allRooms.slice(0, 3)
   );
@@ -49,7 +50,7 @@ const HomePage = () => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl md:text-7xl font-heading mb-4 text-white"
+            className="text-5xl md:text-7xl font-heading mb-4"
           >
             Experience Comfort,
           </motion.h1>
@@ -57,7 +58,7 @@ const HomePage = () => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl md:text-7xl font-heading text-gold mb-8 text-white"
+            className="text-5xl md:text-7xl font-heading text-gold mb-8"
           >
             Luxury & Serenity.
           </motion.h1>
@@ -66,11 +67,20 @@ const HomePage = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.8 }}
           >
-            <Button to="/rooms" as={Link} className="text-white border border-white">
-              Book Your Stay
-            </Button>
+            <Button to="/rooms">Explore Our Rooms</Button>
           </motion.div>
         </div>
+
+        {/* --- 2. ADD THE SEARCH BAR HERE --- */}
+        <motion.div
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 w-full px-4 md:w-auto"
+        >
+          <HeroSearchBar />
+        </motion.div>
+        {/* --- END SEARCH BAR --- */}
       </section>
 
       {/* Featured Rooms Section */}
@@ -126,7 +136,7 @@ const HomePage = () => {
       >
         <div className="absolute inset-0 bg-deep-brown/60" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h2 className="text-4xl font-heading text-center text-soft-white mb-12">
+          <h2 className="text-4xl font-heading text-center text-deep-brown mb-12">
             What Our Guests Say
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
