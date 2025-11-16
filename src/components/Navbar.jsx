@@ -67,7 +67,9 @@ const Navbar = () => {
           backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.8)" : "#F7F2E7",
         }}
         transition={{ duration: 0.3 }}
-        className={`fixed w-full top-0 z-50 transition-shadow backdrop-blur-md shadow-2xl `}
+        className={`fixed w-full top-0 z-50 transition-shadow ${
+          isScrolled ? "backdrop-blur-md shadow-lg" : ""
+        }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -75,7 +77,7 @@ const Navbar = () => {
               whileHover={{ scale: 1.05, rotate: -2 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <Link to="/" className="text-5xl font-heading text-brown">
+              <Link to="/" className="text-3xl font-heading text-gold">
                 Serenity
               </Link>
             </motion.div>
@@ -155,7 +157,7 @@ const Navbar = () => {
               className="fixed inset-0 bg-beige p-6 z-50 md:hidden"
             >
               <div className="flex justify-between items-center mb-12">
-                <span className="text-5xl font-heading text-deep-brown">Serenity</span>
+                <span className="text-3xl font-heading text-gold">Serenity</span>
                 <button onClick={() => setIsOpen(false)}>
                   <FaTimes size={24} className="text-deep-brown" />
                 </button>

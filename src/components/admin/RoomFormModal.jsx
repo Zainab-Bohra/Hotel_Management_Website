@@ -17,7 +17,6 @@ const RoomFormModal = ({ isOpen, onClose, room }) => {
     if (room) {
       setFormData(room);
     } else {
-      // if we add any room then reset default 
       setFormData({
         name: "",
         description: "",

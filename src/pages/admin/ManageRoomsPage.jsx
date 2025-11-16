@@ -4,8 +4,7 @@ import { deleteRoom } from "../../features/roomSlice";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Button from "../../components/Button";
-import RoomFormModal from "../../components/admin/RoomFormModal"; // Import the modal
-
+import RoomFormModal from "../../components/admin/RoomFormModal"; 
 const ManageRoomsPage = () => {
   const { allRooms } = useSelector((state) => state.rooms);
   const dispatch = useDispatch();

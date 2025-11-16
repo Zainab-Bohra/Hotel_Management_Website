@@ -108,5 +108,4 @@ const HeroSearchBar = () => {
   );
 };
 
-// --- THIS LINE WAS MISSING ---
 export default HeroSearchBar;

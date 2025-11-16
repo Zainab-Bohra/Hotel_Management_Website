@@ -39,9 +39,17 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="text-center mt-8 pt-8 border-t border-gold/20 text-sm font-body">
-        © {new Date().getFullYear()} Serenity Hotels. All rights reserved.
+
+      <div className="flex flex-col md:flex-row md:justify-between items-center text-center md:text-right mt-8 pt-8 border-t border-gold/20 text-sm font-body">
+        <p>
+          Developed by <strong>Zainab</strong>
+        </p>
+        
+        <p className="mt-4 md:mt-0">
+          © {new Date().getFullYear()} Serenity Hotels. All rights reserved.
+        </p>
       </div>
+
     </footer>
   );
 };
