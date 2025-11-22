@@ -16,7 +16,7 @@ const TestimonialCard = ({ quote, author }) => (
 );
 
 const HomePage = () => {
-  // Get top 3 rooms for the featured section
+  // top 3 rooms 
   const featuredRooms = useSelector((state) =>
     state.rooms.allRooms.slice(0, 3)
   );
@@ -71,7 +71,6 @@ const HomePage = () => {
           </motion.div>
         </div>
 
-        {/* --- 2. ADD THE SEARCH BAR HERE --- */}
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -80,7 +79,6 @@ const HomePage = () => {
         >
           <HeroSearchBar />
         </motion.div>
-        {/* --- END SEARCH BAR --- */}
       </section>
 
       {/* Featured Rooms Section */}

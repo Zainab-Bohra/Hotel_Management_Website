@@ -77,7 +77,7 @@ const Navbar = () => {
               whileHover={{ scale: 1.05, rotate: -2 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <Link to="/" className="text-3xl font-heading text-gold">
+              <Link to="/" className="text-5xl font-heading text-deep-brown">
                 Serenity
               </Link>
             </motion.div>

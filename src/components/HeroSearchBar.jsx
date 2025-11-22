@@ -21,22 +21,19 @@ const HeroSearchBar = () => {
     const start = startDate.toISOString().split("T")[0];
     const end = endDate.toISOString().split("T")[0];
 
-    // Create search query
     const query = new URLSearchParams({
       start,
       end,
       guests,
     });
 
-    // Navigate to rooms page with the query
     navigate(`/rooms?${query.toString()}`);
   };
 
-  // Custom Input for DatePicker
   const CustomInput = React.forwardRef(({ value, onClick, placeholder }, ref) => (
     <button
       type="button"
-      className="hero-datepicker-input" // This class is defined in index.css
+      className="hero-datepicker-input" // defined in index.css
       onClick={onClick}
       ref={ref}
     >
@@ -49,7 +46,7 @@ const HeroSearchBar = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-soft-white/20 backdrop-blur-md rounded-xl p-4 shadow-lg w-full max-w-4xl"
+      className="bg-soft-white/20 backdrop-blur-md rounded-xl p-4 shadow-lg w-full max-w-4xl mt-5"
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
         {/* Check-in */}

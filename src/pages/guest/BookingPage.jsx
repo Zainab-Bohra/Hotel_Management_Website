@@ -28,12 +28,10 @@ const BookingPage = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState("");
 
-  // Auto-calculate nights and total price
   useEffect(() => {
     if (startDate && endDate && endDate > startDate) {
       const diffTime = Math.abs(endDate - startDate);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
       setNights(diffDays);
       setTotalPrice(diffDays * room.price);
       setError("");
@@ -50,10 +48,38 @@ const BookingPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Validation
-    if (!formData.name || !formData.email || !formData.phone || !formData.aadhaar || !formData.address || !formData.aadhaarFrontImg || !formData.aadhaarBackImg) {
-      setError("Please fill in all guest details, including address and Aadhaar images.");
+    setError(""); // Clear previous errors
+
+    if (formData.name.trim().length < 3) {
+      setError("Name must be at least 3 characters long.");
+      return;
+    }
+
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setError("Phone number must be exactly 10 digits.");
+      return;
+    }
+
+    const emailRegex = /^.{2,}@/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Email must have at least 2 characters before the '@' symbol.");
+      return;
+    }
+
+    const aadhaarRegex = /^\d{12}$/;
+    if (!aadhaarRegex.test(formData.aadhaar)) {
+      setError("Aadhaar number must be exactly 12 digits.");
+      return;
+    }
+
+    if (formData.address.trim().length < 10) {
+      setError("Address must be at least 10 characters long.");
+      return;
+    }
+
+    if (!formData.aadhaarFrontImg || !formData.aadhaarBackImg) {
+      setError("Please provide Aadhaar images (simulate by typing name).");
       return;
     }
     if (!startDate || !endDate) {
@@ -64,12 +90,8 @@ const BookingPage = () => {
       setError("Check-out date must be after check-in date.");
       return;
     }
-    if (nights === 0) {
-      setError("Invalid date range.");
-      return;
-    }
     if (!agreedToTerms) {
-      setError("You must agree to the Terms and Conditions to proceed.");
+      setError("You must agree to the Terms and Conditions.");
       return;
     }
 
@@ -77,12 +99,13 @@ const BookingPage = () => {
       id: `SER${Date.now()}`,
       roomId: room.id,
       roomName: room.name,
-      roomImage: room.images[0], // This is passed to the payment page
+      roomImage: room.images[0],
       ...formData,
       checkIn: startDate.toISOString().split("T")[0],
       checkOut: endDate.toISOString().split("T")[0],
       nights,
       totalPrice,
+      status: "Pending", // Default status
     };
 
     navigate("/payment", { state: { bookingDetails } });
@@ -100,193 +123,74 @@ const BookingPage = () => {
         Book Your Stay
       </h1>
       <div className="bg-soft-white rounded-xl shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Booking Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <h2 className="text-2xl font-heading text-deep-brown">
-            Guest Details
-          </h2>
-          {/* --- Guest Fields --- */}
+          <h2 className="text-2xl font-heading text-deep-brown">Guest Details</h2>
+          
           <div>
-            <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
-            <input
-              type="text" name="name" value={formData.name} onChange={handleInputChange}
-              className="w-full p-3 bg-white border border-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-              required
-            />
+            <label className="block text-sm font-body font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" required />
           </div>
+          
           <div>
-            <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email" name="email" value={formData.email} onChange={handleInputChange}
-              className="w-full p-3 bg-white border border-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-              required
-            />
+            <label className="block text-sm font-body font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" required />
           </div>
+          
           <div>
-            <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-              Phone Number
-            </label>
-            <input
-              type="tel" name="phone" value={formData.phone} onChange={handleInputChange}
-              className="w-full p-3 bg-white border border-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-              required
-            />
+            <label className="block text-sm font-body font-medium text-gray-700 mb-1">Phone Number</label>
+            <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" required />
           </div>
+          
           <div>
-            <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-              Full Address
-            </label>
-            <textarea
-              name="address"
-              rows="3"
-              placeholder="123, Main St, New Delhi, 110001"
-              value={formData.address}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-white border border-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-              required
-            />
+            <label className="block text-sm font-body font-medium text-gray-700 mb-1">Full Address</label>
+            <textarea name="address" rows="3" value={formData.address} onChange={handleInputChange} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" required />
           </div>
 
-          <h2 className="text-2xl font-heading text-deep-brown pt-4">
-            Guest Verification
-          </h2>
+          <h2 className="text-2xl font-heading text-deep-brown pt-4">Verification</h2>
           <div>
-            <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-              Aadhaar Card Number
-            </label>
-            <input
-              type="text" name="aadhaar" placeholder="XXXX XXXX XXXX"
-              value={formData.aadhaar} onChange={handleInputChange}
-              className="w-full p-3 bg-white border border-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-              required
-            />
+            <label className="block text-sm font-body font-medium text-gray-700 mb-1">Aadhaar Number </label>
+            <input type="text" name="aadhaar" value={formData.aadhaar} onChange={handleInputChange} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" required />
           </div>
-      
-          <div className="flex flex-col sm:flex-row gap-4">
+          
+          <div className="flex gap-4">
             <div className="w-full">
-              <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-                Aadhaar Front Image
-              </label>
-              <input
-                type="file"
-                name="aadhaarFrontImg"
-                placeholder="Simulate upload (e.g., front.jpg)"
-                value={formData.aadhaarFrontImg}
-                onChange={handleInputChange}
-                className="w-full p-3 bg-white border border-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-                required
-              />
+              <label className="block text-sm font-body font-medium text-gray-700 mb-1">Aadhaar Front</label>
+              <input type="file" name="aadhaarFrontImg" placeholder="front.jpg" value={formData.aadhaarFrontImg} onChange={handleInputChange} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" required />
             </div>
             <div className="w-full">
-              <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-                Aadhaar Back Image
-              </label>
-              <input
-                type="file"
-                name="aadhaarBackImg"
-                placeholder="Simulate upload (e.g., back.jpg)"
-                value={formData.aadhaarBackImg}
-                onChange={handleInputChange}
-                className="w-full p-3 bg-white border border-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-                required
-              />
+              <label className="block text-sm font-body font-medium text-gray-700 mb-1">Aadhaar Back</label>
+              <input type="file" name="aadhaarBackImg" placeholder="back.jpg" value={formData.aadhaarBackImg} onChange={handleInputChange} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" required />
             </div>
           </div>
 
-          <h2 className="text-2xl font-heading text-deep-brown pt-4">
-            Select Dates
-          </h2>
-          
-          {/* === CODE WAS MISSING HERE === */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="w-full">
-              <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-                Check-in
-              </label>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                minDate={new Date()}
-                placeholderText="Select check-in"
-                className="w-full"
-              />
-            </div>
-            <div className="w-full">
-              <label className="block text-sm font-body font-medium text-gray-700 mb-1">
-                Check-out
-              </label>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate || new Date()}
-                placeholderText="Select check-out"
-                className="w-full"
-              />
-            </div>
+          <h2 className="text-2xl font-heading text-deep-brown pt-4">Dates</h2>
+          <div className="flex gap-4">
+             <div className="w-full">
+               <label className="block text-sm text-gray-700 mb-1">Check-in</label>
+               <DatePicker selected={startDate} onChange={setStartDate} selectsStart startDate={startDate} endDate={endDate} minDate={new Date()} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" placeholderText="Select Date" />
+             </div>
+             <div className="w-full">
+               <label className="block text-sm text-gray-700 mb-1">Check-out</label>
+               <DatePicker selected={endDate} onChange={setEndDate} selectsEnd startDate={startDate} endDate={endDate} minDate={startDate} className="w-full p-3 bg-white border border-beige rounded-lg hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" placeholderText="Select Date" />
+             </div>
           </div>
-          
+
           <div className="pt-2">
             <label className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                checked={agreedToTerms}
-                onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="h-5 w-5 text-gold rounded border-gray-300 focus:ring-gold"
-              />
-              <span className="font-body text-sm text-gray-700">
-                I agree to the <a href="#" className="text-gold underline">Terms and Conditions</a> and <a href="#" className="text-gold underline">Privacy Policy</a>.
-              </span>
+              <input type="checkbox" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="h-5 w-5 text-gold hover:ring-1 hover:ring-gold focus:ring-2 focus:ring-gold focus:outline-none" />
+              <span className="font-body text-sm text-gray-700">I agree to Terms & Conditions.</span>
             </label>
           </div>
-          {/* === END MISSING CODE === */}
 
-          {error && (
-            <p className="text-red-600 text-sm font-body">{error}</p>
-          )}
-
-          <Button type="submit" className="w-full">
-            Proceed to Payment
-          </Button>
+          {error && <p className="text-red-600 text-sm font-body">{error}</p>}
+          <Button type="submit" className="w-full">Proceed to Payment</Button>
         </form>
 
-        {/* Booking Summary */}
-        <div className="bg-beige/80 rounded-lg p-6 space-y-4">
-          {/* === CODE WAS MISSING HERE === */}
-          <h2 className="text-2xl font-heading text-deep-brown mb-4">
-            Booking Summary
-          </h2>
-          <img
-            src={room.images[0]}
-            alt={room.name}
-            className="w-full h-40 object-cover rounded-lg mb-4"
-          />
-          <h3 className="text-xl font-heading text-gold">{room.name}</h3>
-          <div className="font-body text-deep-brown space-y-2">
-            <p className="flex justify-between">
-              <span>Price per night:</span>
-              <span className="font-semibold">₹{room.price}</span>
-            </p>
-            <p className="flex justify-between">
-              <span>Nights:</span>
-              <span className="font-semibold">{nights}</span>
-            </p>
-            <hr className="border-gold/30" />
-            <p className="flex justify-between text-2xl font-heading">
-              <span>Total Price:</span>
-              <span className="text-gold">₹{totalPrice}</span>
-            </p>
-          </div>
-          {/* === END MISSING CODE === */}
+        {/* Summary */}
+        <div className="bg-beige/80 rounded-lg p-6 space-y-4 h-fit">
+           <img src={room.images[0]} alt={room.name} className="w-full h-40 object-cover rounded-lg" />
+           <h3 className="text-xl font-heading text-gold">{room.name}</h3>
+           <p className="flex justify-between font-body"><span>Total Price:</span> <span className="text-gold">₹{totalPrice}</span></p>
         </div>
       </div>
     </motion.div>
